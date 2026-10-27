@@ -36,13 +36,36 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'lyndorind/lab6-rest-api:latest'
+          format: 'table'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Run Grype vulnerability scanner
+        uses: anchore/scan-action@v3
+        with:
+          image: 'lyndorind/lab6-rest-api:latest'
+          fail-build: false
+
+      - name: Run Snyk to check Docker image for vulnerabilities
+        uses: snyk/actions/docker@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: 'lyndorind/lab6-rest-api:latest'
+          args: --severity-threshold=high
+
       - name: Send Slack Notification
         uses: slackapi/slack-github-action@v1.24.0
         if: always()
         with:
           payload: |
             {
-              "text": "Docker образ успішно злито та опубліковано у репозиторій lyndorind/lab6-rest-api! Статус збірки: ${{ job.status }}"
+              "text": "Docker образ успішно зібрано, проскановано на вразливості та опубліковано! Статус: ${{ job.status }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
