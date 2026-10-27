@@ -69,9 +69,11 @@ jobs:
             {
 
               "text": "Docker образ успішно зібрано, проскановано на вразливості та опубліковано! Статус: ${{ job.status }}"
+
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
 
 
 
