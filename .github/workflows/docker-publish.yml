@@ -73,11 +73,5 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-          labels: ${{ steps.meta.outputs.labels }}
-
-              "text": "Docker образ успішно злито та опубліковано у репозиторій lyndorind/lab6-rest-api! Статус збірки: ${{ job.status }}"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
