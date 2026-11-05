@@ -44,8 +44,18 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
         run: |
           uvicorn main:app --host 0.0.0.0 --port 8000 &
-          # Зачекати кілька секунд, поки сервер запуститься
-          sleep 3
+          
+          # Ожидаем, поки сервер станет доступным
+          echo "Waiting for FastAPI to start..."
+          for i in {1..15}; do
+            if curl -s http://127.0.0.1:8000/ping; then
+              echo "FastAPI is up!"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "FastAPI failed to start in time"
+          exit 1
 
       - name: Set up Node.js (for Newman)
         uses: actions/setup-node@v4
