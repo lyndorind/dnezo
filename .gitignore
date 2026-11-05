@@ -10,7 +10,10 @@ __pycache__/
 *.pyc
 .venv/
 .env
+
 db_password.txt
 # Apache JMeter generated results
 jmeter/results/
 jmeter.log
+=======
+db_password.txt
