@@ -23,7 +23,7 @@ def test_db_connection():
         with engine.connect() as connection:
             result = connection.execute(text("SELECT 1;"))
             return {"status": "success", "message": "Підключення до бази даних успішне!", "result": [row[0] for row in result]}
-    except Exception as e:
+    except SQLAlchemyError as e:
         return {"status": "error", "message": str(e)}
 
 @app.get("/")
