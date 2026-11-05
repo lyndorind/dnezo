@@ -1,0 +1,42 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ппп",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000"
+    },
+    {
+      "url": "http://127.0.0.1:8000"
+    }
+  ],
+  "paths": {
+    "/db-test": {
+      "get": {
+        "summary": "http://localhost:8000/db-test",
+        "responses": {}
+      }
+    },
+    "/status": {
+      "get": {
+        "summary": "http://127.0.0.1:8000/status",
+        "responses": {}
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "http://127.0.0.1:8000/",
+        "responses": {}
+      }
+    },
+    "/ping": {
+      "get": {
+        "summary": "http://127.0.0.1:8000/ping",
+        "responses": {}
+      }
+    }
+  }
+}

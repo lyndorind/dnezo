@@ -1,0 +1,8 @@
+workspace:
+  id: 4fa3babd-8538-4625-8911-8172665c0596
+localResources:
+  specs:
+    - ../postman/specs/ппп/ппп.json
+resourceNameMappings:
+  specs:
+    - ../postman/specs/ппп/ппп.json: ппп

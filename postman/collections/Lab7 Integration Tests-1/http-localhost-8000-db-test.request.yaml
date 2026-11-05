@@ -1,0 +1,28 @@
+$kind: http-request
+name: http://localhost:8000/db-test
+description: ""
+url: http://localhost:8000/db-test
+method: GET
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Database connection successful\", function () {\r
+
+      \    const json = pm.response.json();\r
+
+      \r
+
+      \    pm.expect(json.status).to.eql(\"success\");\r
+
+      \    pm.expect(json.result).to.include(1);\r
+
+      });"
+    language: text/javascript
+order: 1000
