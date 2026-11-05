@@ -1,0 +1,130 @@
+{
+  "info": {
+    "name": "Lab7 Integration Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET Ping",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Ping returns pong\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.ping).to.eql(\"pong\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8000/ping",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["ping"]
+        }
+      }
+    },
+    {
+      "name": "GET Status",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Service status is ok\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.status).to.eql(\"ok\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8000/status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["status"]
+        }
+      }
+    },
+    {
+      "name": "GET Root",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Root message exists\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.message).to.eql(\"Hello, Git!\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8000/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": []
+        }
+      }
+    },
+    {
+      "name": "GET Database",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Database connection successful\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.status).to.eql(\"success\");",
+              "    pm.expect(json.result).to.include(1);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8000/db-test",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["db-test"]
+        }
+      }
+    }
+  ]
+}
