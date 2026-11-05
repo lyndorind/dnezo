@@ -11,3 +11,6 @@ __pycache__/
 .venv/
 .env
 db_password.txt
+# Apache JMeter generated results
+jmeter/results/
+jmeter.log
