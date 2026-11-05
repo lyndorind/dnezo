@@ -25,7 +25,7 @@ jobs:
           # Вкажи назву свого образу з Docker Hub
           images: lyndorind/lab6-rest-api
           tags: |
-            type=pr
+            type=ref,event=pr
 
       - name: Build and Push Docker image (PR temporary tag)
         uses: docker/build-push-action@v5
