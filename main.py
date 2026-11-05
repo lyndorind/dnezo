@@ -2,6 +2,7 @@ import os
 
 from fastapi import FastAPI
 from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
 import os
 
 app = FastAPI(
