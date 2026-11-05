@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: testdb
+      # Вказуємо PostgreSQL брати пароль із файлу секрету
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    volumes:
+      # Персистентний volume для збереження даних БД
+      - pgdata:/var/lib/postgresql/data
+    secrets:
+      - db_password
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d testdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      # Звертаємося до БД за ім'ям сервісу "db" та використовуємо пароль із секрету
+      DATABASE_URL: postgresql://postgres:supersecretpassword@db:5432/testdb
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+
+secrets:
+  db_password:
+    file: ./db_password.txt
