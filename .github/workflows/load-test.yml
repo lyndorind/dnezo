@@ -48,7 +48,7 @@ jobs:
 
       - name: Install Apache JMeter 5.6.3
         run: |
-          curl -fsSLo apache-jmeter.tgz https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.tgz
+          curl --retry 5 --retry-delay 3 --retry-all-errors -fsSLo apache-jmeter.tgz https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz
           tar -xzf apache-jmeter.tgz
 
       - name: Prepare test results
@@ -107,3 +107,4 @@ jobs:
       - name: Stop containers
         if: always()
         run: docker compose down -v
+

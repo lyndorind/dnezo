@@ -1,6 +1,7 @@
-import asyncio
-import httpx
+﻿import asyncio
 import time
+
+import httpx
 
 URLS = [
     "http://localhost:8000/ping",
@@ -17,7 +18,7 @@ async def fetch(client, url):
         response = await client.get(url, timeout=5.0)
         duration = time.time() - start_time
         return response.status_code, duration
-    except Exception as e:
+    except httpx.HTTPError:
         return 0, 0
 
 async def bound_fetch(sem, client, url):
@@ -38,7 +39,7 @@ async def main():
 
     success = sum(1 for status, _ in results if status == 200)
     failed = len(results) - success
-    print(f"--- LOAD TEST RESULTS ---")
+    print("--- LOAD TEST RESULTS ---")
     print(f"Total requests: {TOTAL_REQUESTS}")
     print(f"Successful: {success}")
     print(f"Failed: {failed}")
