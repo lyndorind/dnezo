@@ -2,12 +2,10 @@ import os
 import time
 
 from fastapi import FastAPI, Request
-
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 
 from telemetry import configure_telemetry
-
 
 app = FastAPI(
     title="Lab 2 REST API",
