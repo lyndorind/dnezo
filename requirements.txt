@@ -3,6 +3,7 @@ uvicorn
 pydantic
 sqlalchemy
 psycopg2-binary
+
 psycopg[binary]
 
 # OpenTelemetry
@@ -18,3 +19,6 @@ opentelemetry-instrumentation-logging
 # Prometheus metrics
 opentelemetry-exporter-prometheus
 prometheus-client
+
+psycopg[binary]
+
