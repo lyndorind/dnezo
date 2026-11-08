@@ -109,12 +109,37 @@ services:
       - grafana_data:/var/lib/grafana
       - ./observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
 
+  alloy:
+    image: grafana/alloy:v1.21.3
+    restart: unless-stopped
+
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+
+    env_file:
+      - .env.alloy
+
+    volumes:
+      - ./observability/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - alloy-data:/var/lib/alloy/data
+
+    ports:
+      - "127.0.0.1:12345:12345"
+
+    expose:
+      - "4317"
+      - "4318"
+
 volumes:
   pgdata:
   prometheus_data:
   loki_data:
   tempo_data:
   grafana_data:
+  alloy-data:
 
 secrets:
   db_password:

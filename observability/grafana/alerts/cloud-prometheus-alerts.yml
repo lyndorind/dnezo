@@ -1,0 +1,55 @@
+﻿groups:
+  - name: lab2-rest-api
+    interval: 1m
+    rules:
+      - alert: API_Down
+        expr: up{job="api"} == 0
+        for: 1m
+        labels:
+          service: lab2-rest-api
+          severity: critical
+        annotations:
+          summary: FastAPI service is down
+          description: Prometheus cannot scrape the FastAPI metrics endpoint at api:9464. Check the API container and metrics endpoint.
+
+      - alert: High_HTTP_Error_Rate
+        expr: |
+          100 *
+          (
+            sum(rate(http_server_duration_milliseconds_count{
+              job="api",
+              http_status_code=~"5.."
+            }[5m])) or vector(0)
+          )
+          /
+          clamp_min(
+            sum(rate(http_server_duration_milliseconds_count{
+              job="api"
+            }[5m])),
+            1e-9
+          ) > 5
+        for: 5m
+        labels:
+          service: lab2-rest-api
+          severity: warning
+        annotations:
+          summary: High HTTP error rate detected
+          description: HTTP 5xx error rate has exceeded 5% during the last 5 minutes.
+
+      - alert: High_HTTP_Latency
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (
+              rate(http_server_duration_milliseconds_bucket{
+                job="api"
+              }[5m])
+            )
+          ) > 1000
+        for: 5m
+        labels:
+          service: lab2-rest-api
+          severity: warning
+        annotations:
+          summary: High HTTP response latency detected
+          description: The P95 HTTP response latency has exceeded 1 second.

@@ -1,0 +1,23 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+remotecfg {
+  url = sys.env("FLEET_URL")
+
+  basic_auth {
+    username = sys.env("FLEET_INSTANCE_ID")
+    password = sys.env("GCLOUD_RW_API_KEY")
+  }
+
+  id   = "lab8-alloy-agent"
+  name = "lab8-alloy-agent"
+
+  attributes = {
+    environment = "lab8",
+    project     = "lab2-rest-api",
+  }
+
+  poll_frequency = "1m"
+}

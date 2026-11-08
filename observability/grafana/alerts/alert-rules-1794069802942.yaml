@@ -1,0 +1,182 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: lab2-rest-api
+      folder: Lab2 REST API
+      interval: 1m
+      rules:
+        - uid: cg3ligzx9rxmoc
+          title: API Down
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: prometheus
+              model:
+                editorMode: code
+                expr: up{job="api"}
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                        type: eq
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          for: 1m
+          keepFiringFor: 1m
+          annotations:
+            description: Prometheus cannot scrape the FastAPI metrics endpoint at api:9464. Check the API container and metrics endpoint.
+            summary: FastAPI service is down
+          labels:
+            service: lab2-rest-api
+            severity: critical
+          isPaused: false
+          notification_settings:
+            receiver: empty
+        - uid: bg3liuzjua1hcc
+          title: High HTTP Error Rate
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: prometheus
+              model:
+                editorMode: code
+                expr: "100 *\r\n(\r\n  sum(rate(http_server_duration_milliseconds_count{\r\n    job=\"api\",\r\n    http_status_code=~\"5..\"\r\n  }[5m])) or vector(0)\r\n)\r\n/\r\nclamp_min(\r\n  sum(rate(http_server_duration_milliseconds_count{\r\n    job=\"api\"\r\n  }[5m])),\r\n  1e-9\r\n)"
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          for: 5m
+          keepFiringFor: 1m
+          annotations:
+            description: |-
+                HTTP 5xx error rate has exceeded 5% during the last 5 minutes.
+                Check FastAPI application logs and HTTP request traces.
+            summary: High HTTP error rate detected
+          labels:
+            service: lab2-rest-api
+            severity: warning
+          isPaused: false
+          notification_settings:
+            receiver: empty
+        - uid: cg3lj26lrooaob
+          title: High HTTP Latency
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: prometheus
+              model:
+                editorMode: code
+                expr: "histogram_quantile(\r\n  0.95,\r\n  sum by (le) (\r\n    rate(http_server_duration_milliseconds_bucket{\r\n      job=\"api\"\r\n    }[5m])\r\n  )\r\n)"
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1000
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          for: 5m
+          keepFiringFor: 1m
+          annotations:
+            description: |-
+                The P95 HTTP response latency has exceeded 1 second.
+                Check FastAPI performance, database queries and application traces.
+            summary: High HTTP response latency detected
+          labels:
+            service: lab2-rest-api
+            severity: warning
+          isPaused: false
+          notification_settings:
+            receiver: empty

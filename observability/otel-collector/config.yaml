@@ -34,19 +34,22 @@ exporters:
   debug:
     verbosity: basic
 
+  otlphttp/alloy:
+    endpoint: http://alloy:4318
+
 service:
   pipelines:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp_grpc/tempo, debug]
+      exporters: [otlp_grpc/tempo, otlphttp/alloy, debug]
 
     metrics:
       receivers: [prometheus]
       processors: [batch]
-      exporters: [prometheus, debug]
+      exporters: [prometheus, otlphttp/alloy, debug]
 
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp_http/loki, debug]
+      exporters: [otlp_http/loki, otlphttp/alloy, debug]
