@@ -17,3 +17,5 @@ jmeter/results/
 jmeter.log
 =======
 db_password.txt
+
+.env.alloy

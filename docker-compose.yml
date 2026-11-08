@@ -30,8 +30,11 @@ services:
       ENABLE_OTEL: "true"
       OTEL_SERVICE_NAME: lab2-rest-api
 
-      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://tempo:4318/v1/traces
-      OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: http://loki:3100/otlp/v1/logs
+
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+      OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: http://otel-collector:4318/v1/logs
+
+
 
     depends_on:
       db:
@@ -40,6 +43,10 @@ services:
         condition: service_started
       loki:
         condition: service_started
+
+      otel-collector:
+        condition: service_started
+
 
   prometheus:
     image: prom/prometheus:v3.16.0
@@ -77,6 +84,20 @@ services:
       - ./observability/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
       - tempo_data:/var/tempo
 
+
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.165.0
+    restart: unless-stopped
+    command:
+      - --config=/etc/otelcol-contrib/config.yaml
+    volumes:
+      - ./observability/otel-collector/config.yaml:/etc/otelcol-contrib/config.yaml:ro
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+
   grafana:
     image: grafana/grafana:13.3.0
     restart: unless-stopped
@@ -94,12 +115,41 @@ services:
       - grafana_data:/var/lib/grafana
       - ./observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
 
+
+  alloy:
+    image: grafana/alloy:v1.21.3
+    restart: unless-stopped
+
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+
+    env_file:
+      - path: .env.alloy
+        required: false
+
+    volumes:
+      - ./observability/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - alloy-data:/var/lib/alloy/data
+
+    ports:
+      - "127.0.0.1:12345:12345"
+
+    expose:
+      - "4317"
+      - "4318"
+
 volumes:
   pgdata:
   prometheus_data:
   loki_data:
   tempo_data:
   grafana_data:
+
+  alloy-data:
+
 
 secrets:
   db_password:
