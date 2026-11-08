@@ -127,7 +127,8 @@ services:
       - /etc/alloy/config.alloy
 
     env_file:
-      - .env.alloy
+      - path: .env.alloy
+        required: false
 
     volumes:
       - ./observability/alloy/config.alloy:/etc/alloy/config.alloy:ro
