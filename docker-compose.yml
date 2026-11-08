@@ -30,8 +30,13 @@ services:
       ENABLE_OTEL: "true"
       OTEL_SERVICE_NAME: lab2-rest-api
 
+
       OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
       OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: http://otel-collector:4318/v1/logs
+
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://tempo:4318/v1/traces
+      OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: http://loki:3100/otlp/v1/logs
+
 
     depends_on:
       db:
@@ -40,8 +45,10 @@ services:
         condition: service_started
       loki:
         condition: service_started
+
       otel-collector:
         condition: service_started
+
 
   prometheus:
     image: prom/prometheus:v3.16.0
@@ -80,6 +87,7 @@ services:
       - tempo_data:/var/tempo
 
 
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.165.0
     restart: unless-stopped
@@ -108,6 +116,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+
 
   alloy:
     image: grafana/alloy:v1.21.3
@@ -139,7 +148,9 @@ volumes:
   loki_data:
   tempo_data:
   grafana_data:
+
   alloy-data:
+
 
 secrets:
   db_password:
